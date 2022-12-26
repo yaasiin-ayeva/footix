@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import BaseModel from './base.entity';
 import { Country } from "./country.entity";
 
-@Entity()
+@Entity("issue")
 export class Issue extends BaseModel {
 
     @Column()

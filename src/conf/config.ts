@@ -11,6 +11,4 @@ const Env = {
     database: String(process.env.DATABASE_NAME),
 }
 
-console.log('Environment: ', Env);
-
 export default Env;
