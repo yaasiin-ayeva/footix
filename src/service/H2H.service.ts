@@ -2,7 +2,6 @@ import { Repository } from "typeorm"
 import { AppDataSource } from "../data-source"
 import { H2H } from "../entity/H2H.entity"
 
-
 export class H2HService {
 
     private readonly repository: Repository<H2H>
@@ -30,5 +29,4 @@ export class H2HService {
         }
         return await this.repository.save(h2h);
     }
-
 }
