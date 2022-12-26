@@ -15,4 +15,15 @@ export class CountryService {
             .where("country.id = :id", { id: id })
             .getOne()
     }
+
+    public async createCountry(country: Country) {
+        const countryExist = await this.repository.createQueryBuilder("country")
+            .where("country.name = :name", { name: country.name })
+            .getOne();
+        
+        if (countryExist) {
+            throw new Error("Unable to create country, country already exist");
+        }
+        return await this.repository.save(country);
+    }
 }
