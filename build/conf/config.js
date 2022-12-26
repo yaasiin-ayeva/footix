@@ -1,7 +1,8 @@
-require('dotenv').config()
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+require('dotenv').config();
 const Env = {
-    env: String(process.env.API_ENV),
+    env: String(process.env.NODE_ENV),
     name: String(process.env.API_NAME),
     key: String(process.env.API_KEY),
     host: String(process.env.DATABASE_HOST),
@@ -9,8 +10,6 @@ const Env = {
     username: String(process.env.DATABASE_USER),
     password: String(process.env.DATABASE_PASSWORD),
     database: String(process.env.DATABASE_NAME),
-}
-
-console.log('Environment: ', Env);
-
-export default Env;
+};
+exports.default = Env;
+//# sourceMappingURL=config.js.map
