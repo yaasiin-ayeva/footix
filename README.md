@@ -1,2 +1,2 @@
 # footix
-An football api to predict matches
+An api to structure data for football tournaments in order to study some recursive variables
