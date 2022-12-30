@@ -12,11 +12,17 @@ export class UserService {
         this.repository = AppDataSource.getRepository(User)
     }
 
-    public async loadUser(authenticatedUser: any) {
+    public async load(authenticatedUser: any) {
         return await this.repository.createQueryBuilder("user")
             .leftJoinAndSelect("user.role", "role")
             .where("user.id = :id", { id: authenticatedUser.id })
             .getOne()
+    }
+
+    public async loadAll() {
+        return await this.repository.createQueryBuilder("user")
+        .leftJoinAndSelect("user.role", "role")
+        .getMany()
     }
 
     public async updatePicture(authenticatedUser: any, data: UpdateUserPictureDto) {
@@ -39,14 +45,14 @@ export class UserService {
             .execute()
     }
 
-    public async loadUserById(id: number) {
+    public async loadById(id: number) {
         return await this.repository.createQueryBuilder("user")
             .leftJoinAndSelect("user.role", "role")
             .where("user.id = :id", { id: id })
             .getOne()
     }
 
-    public async deleteUser(authenticatedUser: any, id: number) {
+    public async delete(authenticatedUser: any, id: number) {
         return await this.repository.delete(id)
     }
 }

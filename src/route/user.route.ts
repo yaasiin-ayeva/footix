@@ -4,8 +4,9 @@ import UserController from "../controller/user.controller";
 const userRoutes = Router()
 const controller = new UserController()
 
-userRoutes.get('/get', controller.loadUserHandler)
-userRoutes.get('/get/:id', controller.loadUserByIdHandler)
-userRoutes.delete('/delete/:id', controller.deleteUserHandler)
+userRoutes.get('/get', controller.loadHandler)
+userRoutes.get('/get-all', controller.loadAllHandler)
+userRoutes.get('/get/:id', controller.loadByIdHandler)
+userRoutes.delete('/delete/:id', controller.deleteHandler)
 
 export default userRoutes
