@@ -14,7 +14,7 @@ export default class AuthController {
             return res.status(201).json({
                 message: 'user created',
                 data: registration
-            })
+            });
         } catch (e) {
             next(new Error(e.message))
         }
