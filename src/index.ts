@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AppDataSource } from "./data-source";
 import express = require("express");
+import apiRouter from "./route/index.route";
 const bodyParser = require("body-parser")
 const PORT = 3890
 
@@ -25,7 +26,6 @@ AppDataSource.initialize().then(async () => {
 
 const app = express()
 
-app.use(cors(corsOptions))
 app.use(bodyParser.json({ limit: '1mb' }));
 app.use(bodyParser.urlencoded({ limit: '1mb', extended: true }));
 app.use(express.json())
@@ -33,6 +33,14 @@ app.use(express.json())
 app.listen(PORT, () => {
     console.log(`Node server has started on port ${PORT}`)
 })
+
+app.get('/', (req: Request, res: Response, next: NextFunction) => {
+    res.status(200).json({
+        message: 'success'
+    })
+})
+
+app.use('/footix-api', cors(corsOptions), apiRouter)
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
     return res.status(500).json({
