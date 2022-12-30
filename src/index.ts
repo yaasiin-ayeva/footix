@@ -36,7 +36,7 @@ app.listen(PORT, () => {
 
 app.get('/', (req: Request, res: Response, next: NextFunction) => {
     res.status(200).json({
-        message: 'success'
+        message: 'footix-data-center api ;-)'
     })
 })
 
