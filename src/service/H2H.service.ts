@@ -37,6 +37,7 @@ export class H2HService {
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(worksheet, { raw: true });
         let h2hCreated = [];
+        // let h2hExists = [];
 
         let row: any;
         for (row of rows) {
@@ -47,7 +48,13 @@ export class H2HService {
             h2h.away = row.away;
             h2h.homeScore = row.homeScore;
             h2h.awayScore = row.awayScore;
-            h2hCreated.push(await this.createH2H(h2h));
+
+            try {
+                h2hCreated.push(await this.createH2H(h2h));
+            } catch (error) {
+                console.log(error);
+                // h2hExists.push(`Creation of the H2H cancelled because it's already exists in db. Details :  ${h2h.home} vs ${h2h.away} at ${h2h.time} in ${h2h.year}`);
+            }
         }
         return h2hCreated;
     }
