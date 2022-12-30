@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { H2HService } from "../service/H2H.service";
-import multer from 'multer';
+import multer = require('multer');
 import path = require('path');
 const documentsFolder = 'assets/documents/xlsx';
 
@@ -22,27 +22,34 @@ export default class CompagnieController {
 
     public createH2HFromXLSXHandler = async (req: any, res: Response, next: NextFunction) => {
 
-        try {
-            const upload = multer({
-                fileFilter,
-                storage: multer.diskStorage({
-                    destination: function (req, file, callback) {
-                        callback(null, documentsFolder)
-                    },
-                    filename: function (req, file, callback) {
-                        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-                        callback(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname))
-                    }
-                })
-            }).single('xlsxFile');
+        const upload = multer({
+            fileFilter,
+            storage: multer.diskStorage({
+                destination: function (req, file, callback) {
+                    callback(null, documentsFolder)
+                },
+                filename: function (req, file, callback) {
+                    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+                    callback(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname))
+                }
+            })
+        });
 
-            const h2hList = await this.h2hService.createH2HFromXLSX(req.file.path)
-            res.status(200).json({
-                message: 'success',
-                data: h2hList
-            });
-        } catch (error) {
-            next(new Error(error.message))
-        }
+        const uploadMiddleware = upload.single('xlsx');
+        uploadMiddleware(req, res, async (err: any) => {
+            if (err) {
+                next(new Error(err.message))
+            } else {
+                try {
+                    const h2hList = await this.h2hService.createH2HFromXLSX(req.file.path)
+                    res.status(200).json({
+                        message: 'success',
+                        data: h2hList
+                    });
+                } catch (e) {
+                    next(new Error(e.message))
+                }
+            }
+        });
     }
 }
