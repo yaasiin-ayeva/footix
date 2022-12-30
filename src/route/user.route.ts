@@ -5,6 +5,7 @@ const userRoutes = Router()
 const controller = new UserController()
 
 userRoutes.get('/get', controller.loadHandler)
+userRoutes.get('/get-all', controller.loadAllHandler)
 userRoutes.get('/get/:id', controller.loadByIdHandler)
 userRoutes.delete('/delete/:id', controller.deleteHandler)
 
