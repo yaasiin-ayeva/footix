@@ -1,20 +1,20 @@
 import { NextFunction, Request, Response } from "express";
 import AuthenticatedUser from "../interface/authenticatedUser";
-import { UserService } from "../service/user.service";
+import { RoleService } from "../service/role.service";
 
-export default class UserController {
-    private readonly service: UserService
+export default class RoleController {
+    private readonly service: RoleService
 
     constructor() {
-        this.service = new UserService()
+        this.service = new RoleService()
     }
 
-    public loadHandler = async (req: AuthenticatedUser, res: Response, next: NextFunction) => {
+    public createHandler = async (req: any, res: Response, next: NextFunction) => {
         try {
-            const data = await this.service.load(req.user)
-            return res.status(200).json({
-                message: 'success',
-                data: data
+            const role = await this.service.create(req.body)
+            return res.status(201).json({
+                message: 'role created',
+                data: role
             })
         } catch (e) {
             next(new Error(e.message))
@@ -33,24 +33,12 @@ export default class UserController {
         }
     }
 
-    public loadByIdHandler = async (req: any, res: Response, next: NextFunction) => {
-        try {
-            const user = await this.service.loadById(req.params.id)
-            return res.status(200).json({
-                message: 'success',
-                data: user
-            })
-        } catch (e) {
-            next(new Error(e.message))
-        }
-    }
-
     public deleteHandler = async (req: any, res: Response, next: NextFunction) => {
         try {
-            const data = await this.service.delete(req.user, req.params.id)
+            const data = await this.service.delete(req.params.id)
             if (data.affected === 0) {
                 return res.status(404).json({
-                    message: 'User not found'
+                    message: 'Role not found'
                 })
             } else if (data.affected === 1) {
                 return res.status(200).json({

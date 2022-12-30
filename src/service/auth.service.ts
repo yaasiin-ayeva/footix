@@ -95,7 +95,7 @@ export default class AuthService {
 
         if (user) {
             throw Error("Username already taken!");
-        } else if (role == null) {
+        } else if (!role) {
             throw Error("Role not found!");
         } else {
             const bcryptPassword = AuthService.cryptPassword(data.password);
