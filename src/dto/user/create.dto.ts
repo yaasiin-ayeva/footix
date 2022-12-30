@@ -1,6 +1,6 @@
 import { Role } from "../../entity/role.entity"
 
-export default interface CreateUserDto {
+export default interface Register {
     username: string
     password: string
     firstname: string
