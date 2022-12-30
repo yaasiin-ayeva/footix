@@ -73,10 +73,6 @@ export default class AuthService {
 
     public async register(data: RegisterDto) {
 
-        const role = await this.roleRepository.createQueryBuilder('role')
-            .where("role.name = :name", { name: 'user' })
-            .getOne()
-
         if (data.username != null && !EMAIL_REGEX.test(data.username)) {
             throw new Error('Username must be a valid email');
         }
@@ -89,21 +85,24 @@ export default class AuthService {
             throw new Error('Invalid name (must be alphabetic characters)');
         }
 
+        const role = await this.roleRepository.createQueryBuilder('role')
+            .where("role.name = :name", { name: 'user' })
+            .getOne()
+
         const user = await this.userRepository.createQueryBuilder("user")
             .where("user.username = :username", { username: data.username })
             .getOne();
 
         if (user) {
             throw Error("Username already taken!");
+        } else if (role == null) {
+            throw Error("Role not found!");
         } else {
             const bcryptPassword = AuthService.cryptPassword(data.password);
             data.password = bcryptPassword;
-
-            if (role) {
-                data.role = role
-                const userAdded = await this.userRepository.save(data);
-                return userAdded;
-            }
+            data.role = role
+            const userAdded = await this.userRepository.save(data);
+            return userAdded;
         }
     }
 }
