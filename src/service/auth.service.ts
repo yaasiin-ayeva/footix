@@ -3,7 +3,7 @@ import * as jwt from "jsonwebtoken";
 import { Repository } from "typeorm";
 import Env from "../conf/config";
 import { AppDataSource } from "../data-source";
-import CreateUserDto from "../dto/user/create.dto";
+import RegisterDto from "../dto/user/create.dto";
 import LoginDto from "../dto/user/login.dto";
 import { Role } from "../entity/role.entity";
 import { User } from "../entity/user.entity";
@@ -12,7 +12,7 @@ const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"
 const PASS_REGEX = /^(?=.*\d).{8,16}$/;
 const NAME_REGEX = /^[a-z ,.'-]+$/i;
 
-export default class AuthenticationService {
+export default class AuthService {
 
     private readonly userRepository: Repository<User>;
     private readonly roleRepository: Repository<Role>;
@@ -38,7 +38,7 @@ export default class AuthenticationService {
             .getOne()
 
         if (user) {
-            if (AuthenticationService.comparePassword(data.password, user.password)) {
+            if (AuthService.comparePassword(data.password, user.password)) {
                 const authenticatedUser = {
                     id: user.id,
                     username: user.username,
@@ -71,7 +71,11 @@ export default class AuthenticationService {
         return bcrypt.hashSync(password, salt)
     }
 
-    public async registration(data: CreateUserDto) {
+    public async register(data: RegisterDto) {
+
+        const role = await this.roleRepository.createQueryBuilder('role')
+            .where("role.name = :name", { name: 'user' })
+            .getOne()
 
         if (data.username != null && !EMAIL_REGEX.test(data.username)) {
             throw new Error('Username must be a valid email');
@@ -92,23 +96,13 @@ export default class AuthenticationService {
         if (user) {
             throw Error("Username already taken!");
         } else {
-            const bcryptPassword = AuthenticationService.cryptPassword(data.password);
+            const bcryptPassword = AuthService.cryptPassword(data.password);
             data.password = bcryptPassword;
 
-            const role = await this.roleRepository.createQueryBuilder('role')
-                .where("role.name = :name", { name: data.role.name })
-                .getOne();
-
             if (role) {
-                if (role.name == "Admin") {
-                    throw Error("You can't create an admin account!");
-                } else {
-                    data.role = role
-                    const userAdded = await this.userRepository.save(data);
-                    return userAdded;
-                }
-            } else {
-                throw Error("Role not found!");
+                data.role = role
+                const userAdded = await this.userRepository.save(data);
+                return userAdded;
             }
         }
     }
