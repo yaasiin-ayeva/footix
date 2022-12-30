@@ -33,8 +33,6 @@ export class H2HService {
 
     public async createH2HFromXLSX(filePath: string): Promise<H2H[]> {
 
-        
-
         const workbook = XLSX.readFile(filePath);
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(worksheet, { raw: true });
