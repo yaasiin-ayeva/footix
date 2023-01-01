@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { H2HService } from "../service/H2H.service";
 import multer = require('multer');
 import path = require('path');
-const documentsFolder = 'assets/documents/xlsx';
+const documentsFolder = 'assets/xlsx';
 
 const fileFilter = (req: any, file: any, cb: any) => {
     if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
