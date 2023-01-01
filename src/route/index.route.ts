@@ -11,7 +11,7 @@ const apiRouter = Router();
 apiRouter.use('/auth', authRoutes);
 apiRouter.use('/users', authenticationMiddleware, userRoutes);
 apiRouter.use('/roles', authenticationMiddleware, rolePoliceMiddleware, roleRoutes);
-apiRouter.use('/h2h', authenticationMiddleware, rolePoliceMiddleware, h2hRoutes);
+apiRouter.use('/h2h', authenticationMiddleware, h2hRoutes);
 
 export default apiRouter;
 

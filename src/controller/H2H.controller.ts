@@ -36,8 +36,13 @@ export default class H2HController {
         });
 
         const uploadMiddleware = upload.single('xlsx');
+
+        console.log('uploadMiddleware', uploadMiddleware);
+        
         uploadMiddleware(req, res, async (err: any) => {
-            if (err) {
+            if (!req.file) {
+                next(new Error('No file uploaded'));
+            } else if (err) {
                 next(new Error(err.message))
             } else {
                 try {
