@@ -61,9 +61,11 @@ export class H2HService {
                 continue;
             }
 
+            const homeScore = this.getHomeScore(row.score);
+            const awayScore = this.getAwayScore(row.score);
             const h2hDate = new Date(dateString);
-
             const h2h = new H2H();
+
             h2h.time = h2hDate;
             h2h.home = row.home;
             h2h.away = row.away;
@@ -71,7 +73,11 @@ export class H2HService {
             h2h.awayScore = row.awayScore;
 
             try {
-                h2hCreated.push(await this.createH2H(h2h));
+                if (homeScore && awayScore) {
+                    h2hCreated.push(await this.createH2H(h2h));
+                } else {
+                    console.log("Invalid score in row: ", row);
+                }
             } catch (error) {
                 console.log(error);
             }
@@ -91,6 +97,22 @@ export class H2HService {
         const date = h2hTime.match(/\d{2}.\d{2}./);
         if (date) {
             return date[0];
+        }
+        return null;
+    }
+
+    private getHomeScore(h2hScore: String): string {
+        const score = h2hScore.match(/\d{1,2}:\d{1,2}/);
+        if (score) {
+            return score[0].split(":")[0];
+        }
+        return null;
+    }
+
+    private getAwayScore(h2hScore: String): string {
+        const score = h2hScore.match(/\d{1,2}:\d{1,2}/);
+        if (score) {
+            return score[0].split(":")[1];
         }
         return null;
     }
