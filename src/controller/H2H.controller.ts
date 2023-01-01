@@ -12,7 +12,7 @@ const fileFilter = (req: any, file: any, cb: any) => {
     }
 }
 
-export default class CompagnieController {
+export default class H2HController {
 
     private h2hService: H2HService;
 
