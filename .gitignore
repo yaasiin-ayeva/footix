@@ -6,6 +6,9 @@ tmp/
 temp/
 *.code-workspace
 
+# XLSX files
+*.xlsx
+
 # Logs
 logs
 *.log
