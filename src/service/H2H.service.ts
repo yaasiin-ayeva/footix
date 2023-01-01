@@ -2,6 +2,7 @@ import { Repository } from "typeorm"
 import { AppDataSource } from "../data-source"
 import { H2H } from "../entity/H2H.entity"
 import * as XLSX from 'xlsx';
+import * as moment from 'moment';
 
 export class H2HService {
 
@@ -20,7 +21,6 @@ export class H2HService {
     public async createH2H(h2h: H2H) {
         const h2hExist = await this.repository.createQueryBuilder("h2h")
             .where("h2h.home = :home", { home: h2h.home })
-            .andWhere("h2h.year = :year", { year: h2h.year })
             .andWhere("h2h.time = :time", { time: h2h.time })
             .andWhere("h2h.away = :away", { away: h2h.away })
             .getOne();
@@ -32,18 +32,39 @@ export class H2HService {
     }
 
     public async createH2HFromXLSX(filePath: string): Promise<H2H[]> {
-
         const workbook = XLSX.readFile(filePath);
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(worksheet, { raw: true });
         let h2hCreated = [];
-        // let h2hExists = [];
 
         let row: any;
         for (row of rows) {
+
+            if (isNaN(row.year)) {
+                console.log("Invalid year in row: ", row);
+                continue;
+            }
+
+            let dateString: string;
+            const date = await this.getDateString(row.time);
+            const time = await this.getTimeString(row.time);
+
+            if (!time || !date) {
+                console.log("Invalid time in row: ", row);
+                continue;
+            }
+
+            dateString = `${date}${row.year} ${time}`;
+
+            if (!moment(dateString, "DD.MM.YYYY hh:mm").isValid()) {
+                console.log("Invalid time in row: ", row);
+                continue;
+            }
+
+            const h2hDate = new Date(dateString);
+
             const h2h = new H2H();
-            h2h.year = row.year;
-            h2h.time = row.time;
+            h2h.time = h2hDate;
             h2h.home = row.home;
             h2h.away = row.away;
             h2h.homeScore = row.homeScore;
@@ -53,9 +74,24 @@ export class H2HService {
                 h2hCreated.push(await this.createH2H(h2h));
             } catch (error) {
                 console.log(error);
-                // h2hExists.push(`Creation of the H2H cancelled because it's already exists in db. Details :  ${h2h.home} vs ${h2h.away} at ${h2h.time} in ${h2h.year}`);
             }
         }
         return h2hCreated;
+    }
+
+    private async getTimeString(h2hTime: String): Promise<string> {
+        const time = h2hTime.match(/\d{2}:\d{2}/);
+        if (time) {
+            return time[0];
+        }
+        return null;
+    }
+
+    private async getDateString(h2hTime: String): Promise<string> {
+        const date = h2hTime.match(/\d{2}.\d{2}./);
+        if (date) {
+            return date[0];
+        }
+        return null;
     }
 }

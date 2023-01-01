@@ -4,9 +4,6 @@ import { Column, Entity } from "typeorm";
 @Entity("h2h")
 export class H2H extends BaseModel {
 
-    @Column({ type: "int" })
-    year: number
-
     @Column({ type: "date" })
     time: Date
 
