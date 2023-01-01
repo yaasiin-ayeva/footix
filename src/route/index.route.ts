@@ -10,6 +10,7 @@ const apiRouter = Router()
 apiRouter.use('/auth', authRoutes);
 apiRouter.use('/users', authenticationMiddleware, userRoutes);
 apiRouter.use('/roles', authenticationMiddleware, rolePoliceMiddleware, roleRoutes);
+// apiRouter.use('/roles', roleRoutes);
 
 export default apiRouter
 

@@ -85,19 +85,21 @@ export default class AuthService {
             throw new Error('Invalid name (must be alphabetic characters)');
         }
 
-        const role = await this.roleRepository.createQueryBuilder('role')
-            .where("role.name = :name", { name: 'user' })
-            .getOne()
-
         const user = await this.userRepository.createQueryBuilder("user")
             .where("user.username = :username", { username: data.username })
             .getOne();
 
         if (user) {
             throw Error("Username already taken!");
-        } else if (!role) {
-            throw Error("Role not found!");
         } else {
+
+            const role = await this.roleRepository.createQueryBuilder('role')
+                .where("role.name = :name", { name: 'User' })
+                .getOne()
+
+            if (!role)
+                throw Error("Role not found!");
+
             const bcryptPassword = AuthService.cryptPassword(data.password);
             data.password = bcryptPassword;
             data.role = role
