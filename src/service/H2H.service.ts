@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
-import { AppDataSource } from "../data-source";
-import { H2H } from "../entity/H2H.entity";
 import * as XLSX from 'xlsx';
+import { AppDataSource } from "../data-source";
+import { H2H } from "../entity/h2h.entity";
 import moment = require("moment");
 
 export class H2HService {
@@ -51,6 +51,7 @@ export class H2HService {
     }
 
     public async createH2HFromXLSX(filePath: string): Promise<H2H[]> {
+        
         const workbook = XLSX.readFile(filePath);
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(worksheet, { raw: true });
@@ -84,8 +85,6 @@ export class H2HService {
             const awayScore = this.getAwayScore(row.score);
             const h2hDate = new Date(dateString);
 
-            console.log('h2hDate', h2hDate.toLocaleDateString());
-
             const h2h = new H2H();
 
             h2h.time = h2hDate;
@@ -100,11 +99,7 @@ export class H2HService {
             }
 
             try {
-                if (homeScore && awayScore) {
-                    h2hCreated.push(await this.createH2H(h2h));
-                } else {
-                    console.log("Invalid score in row: ", row);
-                }
+                h2hCreated.push(await this.createH2H(h2h));
             } catch (error) {
                 console.log(error);
             }
