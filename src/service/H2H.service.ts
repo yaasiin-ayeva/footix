@@ -2,7 +2,7 @@ import { Repository } from "typeorm"
 import { AppDataSource } from "../data-source"
 import { H2H } from "../entity/H2H.entity"
 import * as XLSX from 'xlsx';
-import * as moment from 'moment';
+import moment = require("moment");
 
 export class H2HService {
 
@@ -54,11 +54,10 @@ export class H2HService {
                 continue;
             }
 
-            dateString = `${date}${row.year} ${time}`;
+            dateString = `${date}${row.year} ${time}:00`.replace(".", "-");
             console.log('dateString', dateString);
 
-
-            if (!moment(dateString, "DD.MM.YYYY hh:mm").isValid()) {
+            if (!moment(dateString, "DD-MM-YYYY hh:mm:ss").isValid()) {
                 console.log("Invalid time in row: ", row);
                 continue;
             }
@@ -66,6 +65,9 @@ export class H2HService {
             const homeScore = this.getHomeScore(row.score);
             const awayScore = this.getAwayScore(row.score);
             const h2hDate = new Date(dateString);
+
+            console.log('h2hDate', h2hDate.toLocaleDateString());
+            
             const h2h = new H2H();
 
             h2h.time = h2hDate;
@@ -73,6 +75,11 @@ export class H2HService {
             h2h.away = row.away;
             h2h.homeScore = homeScore;
             h2h.awayScore = awayScore;
+
+            if (!homeScore || !awayScore) {
+                console.log("Invalid score in row: ", row);
+                continue;
+            }
 
             try {
                 if (homeScore && awayScore) {
@@ -100,6 +107,7 @@ export class H2HService {
         if (date) {
             return date[0];
         }
+        console.log(`Invalid date : ${date} in`, arg);
         return null;
     }
 
