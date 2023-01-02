@@ -51,7 +51,7 @@ export default class AuthService {
 
                 return jwt.sign(authenticatedUser, Env.key, {
                     algorithm: "HS512",
-                    expiresIn: "3h"
+                    expiresIn: "3d"
                 });
 
             } else {
