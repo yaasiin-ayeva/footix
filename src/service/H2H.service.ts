@@ -2,7 +2,6 @@ import { Repository } from "typeorm";
 import * as XLSX from 'xlsx';
 import { AppDataSource } from "../data-source";
 import { H2H } from "../entity/h2h.entity";
-import moment = require("moment");
 
 export class H2HService {
 
@@ -51,7 +50,7 @@ export class H2HService {
     }
 
     public async createH2HFromXLSX(filePath: string): Promise<H2H[]> {
-        
+
         const workbook = XLSX.readFile(filePath);
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(worksheet, { raw: true });
@@ -59,47 +58,28 @@ export class H2HService {
 
         let row: any;
         for (row of rows) {
-
-            if (isNaN(Number(row.year))) {
-                console.log("Invalid year in row: ", row);
-                continue;
-            }
-
-            let dateString: string;
-            const date = this.getDateString(row.time);
-            const time = this.getTimeString(row.time);
-
-            if (!time || !date) {
-                console.log("Invalid time in row: ", row);
-                continue;
-            }
-
-            dateString = `${date}${row.year} ${time}:00`.replace(".", "-");
-
-            if (!moment(dateString, "DD-MM-YYYY hh:mm:ss").isValid()) {
-                console.log("Invalid time in row: ", row);
-                continue;
-            }
-
-            const homeScore = this.getHomeScore(row.score);
-            const awayScore = this.getAwayScore(row.score);
-            const h2hDate = new Date(dateString);
-
-            const h2h = new H2H();
-
-            h2h.time = h2hDate;
-            h2h.home = row.home;
-            h2h.away = row.away;
-            h2h.homeScore = homeScore;
-            h2h.awayScore = awayScore;
-
-            if (!homeScore || !awayScore) {
-                console.log("Invalid score in row: ", row);
-                continue;
-            }
-
             try {
-                h2hCreated.push(await this.createH2H(h2h));
+
+                const yyyy: number = Number(row.year);
+                const mm: number = Number(this.getMonthDateString(row.time)) - 1; // month is zero based in Date object
+                const dd: number = Number(this.getDayDateString(row.time));
+                const hh: number = Number(this.getHourString(row.time));
+                const min: number = Number(this.getMinuteString(row.time));
+
+                const h2hDate = new Date(yyyy, mm, dd, hh, min, 0, 0);
+                const homeScore = this.getHomeScore(row.score);
+                const awayScore = this.getAwayScore(row.score);
+
+                const h2h = new H2H();
+
+                h2h.time = h2hDate;
+                h2h.home = row.home;
+                h2h.away = row.away;
+                h2h.homeScore = homeScore;
+                h2h.awayScore = awayScore;
+
+                const data = await this.createH2H(h2h);
+                h2hCreated.push(data);
             } catch (error) {
                 console.log(error);
             }
@@ -107,20 +87,35 @@ export class H2HService {
         return h2hCreated;
     }
 
-    private getTimeString(arg: String): string {
-        const time = arg.match(/\d{2}:\d{2}/);
-        if (time) {
-            return time[0];
+    private getHourString(arg: String): string {
+        const hour = arg.match(/\d{2}:/);
+        if (hour) {
+            return hour[0].replace(/:/g, '');
         }
         return null;
     }
 
-    private getDateString(arg: String): string {
-        const date = arg.match(/\d{2}.\d{2}./);
-        if (date) {
-            return date[0];
+    private getMinuteString(arg: String): string {
+        const minute = arg.match(/:\d{2}/);
+        if (minute) {
+            return minute[0].replace(/:/g, '');
         }
-        console.log(`Invalid date : ${date} in`, arg);
+        return null;
+    }
+
+    private getDayDateString(arg: String): string {
+        const date = arg.match(/\d{2}./);
+        if (date) {
+            return date[0].replace(/\./g, '');
+        }
+        return null;
+    }
+
+    private getMonthDateString(arg: String): string {
+        const date = arg.match(/.\d{2}./);
+        if (date) {
+            return date[0].replace(/\./g, '');
+        }
         return null;
     }
 
@@ -130,7 +125,6 @@ export class H2HService {
         if (score) {
             return score[0].split(":")[0];
         }
-        return null;
     }
 
     private getAwayScore(arg: String): string {

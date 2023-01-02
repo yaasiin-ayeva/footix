@@ -4,7 +4,7 @@ import { Column, Entity } from "typeorm";
 @Entity("h2h")
 export class H2H extends BaseModel {
 
-    @Column({ type: "timestamp" })
+    @Column({ type: 'timestamp' })
     time: Date
 
     @Column({ type: "varchar" })
