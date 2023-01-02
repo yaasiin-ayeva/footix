@@ -67,7 +67,7 @@ export default class AuthService {
     }
 
     private static cryptPassword(password: string): string {
-        const salt = bcrypt.genSaltSync(24)
+        const salt = bcrypt.genSaltSync(12)
         return bcrypt.hashSync(password, salt)
     }
 
