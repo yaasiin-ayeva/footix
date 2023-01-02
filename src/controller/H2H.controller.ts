@@ -8,7 +8,7 @@ const fileFilter = (req: any, file: any, cb: any) => {
     if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
         cb(null, true);
     } else {
-        cb(new Error('Invalid file type'), false);
+        cb(new Error('Invalid file type, only .xlsx file expected!'), false);
     }
 }
 
