@@ -1,6 +1,6 @@
-import { Repository } from "typeorm"
-import { AppDataSource } from "../data-source"
-import { H2H } from "../entity/H2H.entity"
+import { Repository } from "typeorm";
+import { AppDataSource } from "../data-source";
+import { H2H } from "../entity/H2H.entity";
 import * as XLSX from 'xlsx';
 import moment = require("moment");
 
@@ -55,7 +55,6 @@ export class H2HService {
             }
 
             dateString = `${date}${row.year} ${time}:00`.replace(".", "-");
-            console.log('dateString', dateString);
 
             if (!moment(dateString, "DD-MM-YYYY hh:mm:ss").isValid()) {
                 console.log("Invalid time in row: ", row);
@@ -67,7 +66,7 @@ export class H2HService {
             const h2hDate = new Date(dateString);
 
             console.log('h2hDate', h2hDate.toLocaleDateString());
-            
+
             const h2h = new H2H();
 
             h2h.time = h2hDate;
