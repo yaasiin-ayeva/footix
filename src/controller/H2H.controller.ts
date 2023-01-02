@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { H2HService } from "../service/H2H.service";
+import { H2HService } from "../service/h2h.service";
 import multer = require('multer');
 import path = require('path');
 const documentsFolder = 'assets/xlsx';
