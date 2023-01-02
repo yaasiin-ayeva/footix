@@ -5,7 +5,7 @@ const roleRoutes = Router()
 const controller = new RoleController()
 
 roleRoutes.get('/add', controller.createHandler)
-roleRoutes.get('/get-all', controller.loadAllHandler)
+roleRoutes.get('/all', controller.loadAllHandler)
 roleRoutes.delete('/delete/:id', controller.deleteHandler)
 
 export default roleRoutes
