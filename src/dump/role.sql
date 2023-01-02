@@ -7,10 +7,6 @@
 -- Server version: 5.7.24
 -- PHP Version: 8.0.1
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
 --
 -- Database: `footix`
 --
@@ -21,6 +17,4 @@ SET time_zone = "+00:00";
 -- Dumping data for table `role`
 --
 
-INSERT INTO `role` (`name`) VALUES
-('Admin'),
-('User');
+INSERT INTO `role` (`name`) VALUES ('Admin'), ('User');
