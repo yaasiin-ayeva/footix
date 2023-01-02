@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
-import { H2H } from "../entity/H2H.entity";
+import { H2H } from "../entity/h2h.entity";
 import * as XLSX from 'xlsx';
 import moment = require("moment");
 

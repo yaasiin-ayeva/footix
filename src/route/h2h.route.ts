@@ -1,5 +1,5 @@
 import { Router } from "express";
-import H2HController from "../controller/H2H.controller";
+import H2HController from "../controller/h2h.controller";
 
 const h2hRoutes = Router();
 const controller = new H2HController();
