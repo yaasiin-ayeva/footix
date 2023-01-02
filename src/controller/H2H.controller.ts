@@ -49,6 +49,8 @@ export default class H2HController {
             const h2hList = await this.h2hService.loadBySeason(req.params.season.split('-').map((year: string) => parseInt(year)));
             res.status(200).json({
                 message: 'success',
+                size: h2hList.length,
+                season: req.params.season,
                 data: h2hList
             });
         } catch (e) {
