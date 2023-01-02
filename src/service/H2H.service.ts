@@ -12,13 +12,32 @@ export class H2HService {
         this.repository = AppDataSource.getRepository(H2H)
     }
 
-    public async loadH2HById(id: number) {
+    public async loadById(id: number) {
         return await this.repository.createQueryBuilder("h2h")
             .where("h2h.id = :id", { id: id })
             .getOne();
     }
 
-    public async createH2H(h2h: H2H) {
+    public async loadBySeason(season: [number, number]) {
+        return await this.repository.createQueryBuilder("h2h")
+            .where("h2h.time >= :start", { start: new Date(season[0], 0, 1) })
+            .andWhere("h2h.time <= :end", { end: new Date(season[1], 11, 31) })
+            .getMany();
+    }
+
+    public async loadByTeam(team: string) {
+        return await this.repository.createQueryBuilder("h2h")
+            .where("h2h.home = :team", { team: team })
+            .orWhere("h2h.away = :team", { team: team })
+            .getMany();
+    }
+
+    public async loadAll() {
+        return await this.repository.createQueryBuilder("h2h")
+            .getMany();
+    }
+
+    private async createH2H(h2h: H2H) {
         const h2hExist = await this.repository.createQueryBuilder("h2h")
             .where("h2h.home = :home", { home: h2h.home })
             .andWhere("h2h.time = :time", { time: h2h.time })
