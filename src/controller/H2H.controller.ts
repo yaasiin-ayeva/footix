@@ -58,6 +58,20 @@ export default class H2HController {
         }
     }
 
+    public loadByTeamHandler = async (req: any, res: Response, next: NextFunction) => {
+        try {
+            const h2hList = await this.h2hService.loadByTeam(req.params.team);
+            res.status(200).json({
+                message: 'success',
+                size: h2hList.length,
+                team: req.params.team,
+                data: h2hList
+            });
+        } catch (e) {
+            next(e);
+        }
+    }
+
     public createFromXlsxHandler = async (req: any, res: Response, next: NextFunction) => {
 
         const upload = multer({
