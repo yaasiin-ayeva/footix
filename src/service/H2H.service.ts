@@ -40,18 +40,14 @@ export class H2HService {
         let row: any;
         for (row of rows) {
 
-            let continueFlag = '';
-            if (isNaN(row.year)) {
+            if (isNaN(Number(row.year))) {
                 console.log("Invalid year in row: ", row);
-                continueFlag = 'continue';
                 continue;
             }
 
-            console.log('Continue flag: ', continueFlag);
-
             let dateString: string;
-            const date = await this.getDateString(row.time);
-            const time = await this.getTimeString(row.time);
+            const date = this.getDateString(row.time);
+            const time = this.getTimeString(row.time);
 
             if (!time || !date) {
                 console.log("Invalid time in row: ", row);
@@ -59,6 +55,8 @@ export class H2HService {
             }
 
             dateString = `${date}${row.year} ${time}`;
+            console.log('dateString', dateString);
+
 
             if (!moment(dateString, "DD.MM.YYYY hh:mm").isValid()) {
                 console.log("Invalid time in row: ", row);
@@ -89,7 +87,7 @@ export class H2HService {
         return h2hCreated;
     }
 
-    private async getTimeString(arg: String): Promise<string> {
+    private getTimeString(arg: String): string {
         const time = arg.match(/\d{2}:\d{2}/);
         if (time) {
             return time[0];
@@ -97,7 +95,7 @@ export class H2HService {
         return null;
     }
 
-    private async getDateString(arg: String): Promise<string> {
+    private getDateString(arg: String): string {
         const date = arg.match(/\d{2}.\d{2}./);
         if (date) {
             return date[0];
