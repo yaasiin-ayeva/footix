@@ -40,10 +40,14 @@ export class H2HService {
         let row: any;
         for (row of rows) {
 
+            let continueFlag = '';
             if (isNaN(row.year)) {
                 console.log("Invalid year in row: ", row);
+                continueFlag = 'continue';
                 continue;
             }
+
+            console.log('Continue flag: ', continueFlag);
 
             let dateString: string;
             const date = await this.getDateString(row.time);
@@ -69,8 +73,8 @@ export class H2HService {
             h2h.time = h2hDate;
             h2h.home = row.home;
             h2h.away = row.away;
-            h2h.homeScore = row.homeScore;
-            h2h.awayScore = row.awayScore;
+            h2h.homeScore = homeScore;
+            h2h.awayScore = awayScore;
 
             try {
                 if (homeScore && awayScore) {
@@ -85,32 +89,34 @@ export class H2HService {
         return h2hCreated;
     }
 
-    private async getTimeString(h2hTime: String): Promise<string> {
-        const time = h2hTime.match(/\d{2}:\d{2}/);
+    private async getTimeString(arg: String): Promise<string> {
+        const time = arg.match(/\d{2}:\d{2}/);
         if (time) {
             return time[0];
         }
         return null;
     }
 
-    private async getDateString(h2hTime: String): Promise<string> {
-        const date = h2hTime.match(/\d{2}.\d{2}./);
+    private async getDateString(arg: String): Promise<string> {
+        const date = arg.match(/\d{2}.\d{2}./);
         if (date) {
             return date[0];
         }
         return null;
     }
 
-    private getHomeScore(h2hScore: String): string {
-        const score = h2hScore.match(/\d{1,2}:\d{1,2}/);
+    private getHomeScore(arg: String): string {
+        arg = arg.replace(/\s/g, '');
+        const score = arg.match(/\d{1,2}:\d{1,2}/);
         if (score) {
             return score[0].split(":")[0];
         }
         return null;
     }
 
-    private getAwayScore(h2hScore: String): string {
-        const score = h2hScore.match(/\d{1,2}:\d{1,2}/);
+    private getAwayScore(arg: String): string {
+        arg = arg.replace(/\s/g, '');
+        const score = arg.match(/\d{1,2}:\d{1,2}/);
         if (score) {
             return score[0].split(":")[1];
         }
