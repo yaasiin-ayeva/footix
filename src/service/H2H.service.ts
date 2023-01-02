@@ -28,6 +28,7 @@ export class H2HService {
         return await this.repository.createQueryBuilder("h2h")
             .where("h2h.home = :team", { team: team })
             .orWhere("h2h.away = :team", { team: team })
+            .orderBy("h2h.time", "ASC")
             .getMany();
     }
 
