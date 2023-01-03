@@ -8,7 +8,7 @@ An api to structure data for football tournaments in order to study some recursi
 npm i
 ```
 2. Please make sure to check you environment. We're using in this project dotenv architecture.<br>
-Rename the **./src/.env.example** file to **./src/.env** and then set up inside this file environnement settings
+Rename the `./src/.env.example` file to `./src/.env` and then set up inside this file environnement settings
 
 3. Finally Run : 
 ```bash
