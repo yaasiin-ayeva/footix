@@ -1,7 +1,7 @@
 # FOOTIX-DATA-CENTER
 An api to structure data for football tournaments in order to study some recursive variables
 
-# Steps to run this project in development mode:
+# Steps to run this project:
 
 1. Run :
 ```bash
