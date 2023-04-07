@@ -1,5 +1,5 @@
 # FOOTIX-DATA-CENTER
-An api to structure data for football tournaments in order to study some recursive variables
+An express api to structure data for soccer tournaments in order to study some recursive variables
 
 # Steps to run this project:
 
