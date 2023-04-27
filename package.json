@@ -53,7 +53,7 @@
     "nodemon": "^2.0.21",
     "path": "^0.12.7",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.3.12",
+    "typeorm": "^0.3.13",
     "xlsx": "^0.18.5"
   }
 }
