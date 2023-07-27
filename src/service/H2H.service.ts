@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import * as XLSX from 'xlsx';
 import { AppDataSource } from "../data-source";
-import { H2H } from "../entity/h2h.entity";
+import { H2H } from "../entity/H2H.entity";
 
 export class H2HService {
 
